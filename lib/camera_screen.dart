@@ -53,6 +53,7 @@ class _CameraScreenState extends State<CameraScreen> {
       ResolutionPreset.medium,
     );
     _initializeControllerFuture = _controller.initialize();
+    setState(() {});
   }
 
   @override
@@ -162,59 +163,44 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: bgColor,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.more_vert, color: Colors.white),
-              onPressed: () {},
-            ),
-          ],
-          leading: _takenImagePath != null
-              ? IconButton(
-                  icon: Icon(Icons.close, color: Colors.white),
-                  onPressed: _redirectToTakePicture,
-                )
-              : Container(),
-        ),
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          child: Stack(
-            children: [
-              _buildCameraPreview(),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: (_takenImagePath == null)
-                    ? _clickingCameraComponent()
-                    : _cameraImageTakenComponent(),
-              )
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: bgColor,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.more_vert, color: Colors.white),
+                onPressed: () {},
+              ),
             ],
+            leading: _takenImagePath != null
+                ? IconButton(
+                    icon: Icon(Icons.close, color: Colors.white),
+                    onPressed: _redirectToTakePicture,
+                  )
+                : Container(),
           ),
-        )
+          body: Container(
+            height: MediaQuery.of(context).size.height,
+            child: Stack(
+              children: [
+                _buildCameraPreview(),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: (_takenImagePath == null)
+                      ? _clickingCameraComponent()
+                      : _cameraImageTakenComponent(),
+                )
+              ],
+            ),
+          )
 
-        // Column(
-        //   children: [
-        //     // Expanded(
-        //     //   flex: 7,
-        //     //   child: _buildCameraPreview(),
-        //     // ),
-        //     Container(
-        //       height: MediaQuery.of(context).size.height*0.6,
-        //       child: _buildCameraPreview(),
-        //     ),
-        //
-        //     Expanded(
-        //       child: (_takenImagePath == null)
-        //           ? _cameraImageTakenComponent()
-        //           // ? _clickingCameraComponent()
-        //           : _cameraImageTakenComponent(),
-        //     ),
-        //   ],
-        // ),
-        );
+
+          ),
+    );
   }
 
   Widget _clickingCameraComponent() {
@@ -445,6 +431,22 @@ class _CameraScreenState extends State<CameraScreen> {
     });
   }
 
+
+  Future<bool> _onWillPop() async{
+    if (_takenImagePath != null) {
+      // Reset states
+      setState(() {
+        _takenImagePath = null;
+        takePictureAgain = false;
+        firstEyeOvalOverlay = false;
+        secondEyeOvalOverlay = false;
+        mouthOvalOverlay = false;
+      });
+      return false;
+    }
+    return true;
+  }
+
   void _openGallery() async{
     try {
       final ImagePicker picker = ImagePicker();
@@ -461,6 +463,7 @@ class _CameraScreenState extends State<CameraScreen> {
       print("Failed to pick image: $e");
     }
   }
+
 
 
 }

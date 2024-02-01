@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:face_editing_assignment/splashscreen.dart';
 import 'package:flutter/material.dart';
 
 import 'camera_screen.dart';
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: CameraScreen(camera: camera),
+      home: SplashScreen(camera: camera),
     );
   }
 }
