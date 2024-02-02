@@ -15,26 +15,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    requestPermissions();
+    navigateToCameraScreen();
   }
 
-  void requestPermissions() async {
-    await Future.delayed(Duration(seconds: 3)); // Display the splash screen for a few seconds
 
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.storage,
-      Permission.camera,
-      Permission.microphone
-    ].request();
-
-    if (statuses[Permission.storage]!.isGranted && statuses[Permission.camera]!.isGranted) {
-      navigateToCameraScreen();
-    } else {
-      print('Permissions not granted');
-    }
-  }
-
-  void navigateToCameraScreen() {
+  void navigateToCameraScreen() async{
+    await Future.delayed(const Duration(seconds: 3));
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CameraScreen(camera: widget.camera,)));
   }
 
